@@ -1,6 +1,10 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
+from airplane_sim.first_airplane import airplane_zsg
+
+Air = airplane_zsg()
+
 x = np.arange(0,20,1)
 
 y = 2 * x + 5
