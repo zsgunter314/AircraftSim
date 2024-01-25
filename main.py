@@ -1,6 +1,5 @@
 import numpy as np
 from matplotlib import pyplot as plt
-
 from airplane_sim.first_airplane import airplane_zsg
 
 Air = airplane_zsg()
