@@ -85,9 +85,9 @@ class DrawMAV:
         # points are in XYZ coordinates
         #   define the points on the MAV according to Appendix C.3
         points = self.unit_length * np.array([
-            [1, 1, 0],  # point 1 [0]
-            [1, -1, 0],  # point 2 [1]
-            [-1, -1, 0],  # point 3 [2]
+            [0.5, 0, 0.1],  # point 1 [0]
+            [-.3, .2, -.3],  # point 2 [1]
+            [-.3, -.2, -.3],  # point 3 [2]
             [-1, 1, 0],  # point 4 [3]
             [1, 1, -2],  # point 5 [4]
             [1, -1, -2],  # point 6 [5]
@@ -100,7 +100,7 @@ class DrawMAV:
             ]).T
         # point index that defines the mesh
         index = np.array([
-            [0, 1, 5],  # front 1
+            [0, 1, 2],  # Top Nose Face
             [0, 5, 4],  # front 2
             [3, 2, 6],  # back 1
             [3, 6, 7],  # back 2
@@ -119,7 +119,7 @@ class DrawMAV:
         blue = np.array([0., 0., 1., 1])
         yellow = np.array([1., 1., 0., 1])
         meshColors = np.empty((13, 3, 4), dtype=np.float32)
-        meshColors[0] = yellow  # front 1
+        meshColors[0] = red  # front 1
         meshColors[1] = yellow  # front 2
         meshColors[2] = yellow  # back 1
         meshColors[3] = yellow  # back 2
