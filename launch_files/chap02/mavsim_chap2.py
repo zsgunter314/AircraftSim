@@ -36,25 +36,51 @@ state = MsgState()
 sim_time = SIM.start_time
 motions_time = 0
 time_per_motion = 3
-end_time = 20
+end_time = 30
 
 # main simulation loop
 print("Press Esc to exit...")
 
 while sim_time < end_time:
+    print(SIM.ts_simulation)
     # -------vary states to check viewer-------------
     if motions_time < time_per_motion:
-        state.north += 10*SIM.ts_simulation
+        state.north += 30*SIM.ts_simulation
+        state.theta += .1*SIM.ts_simulation
+        state.altitude += state.theta
     elif motions_time < time_per_motion*2:
-        state.east += 10*SIM.ts_simulation
+        state.north += 30*SIM.ts_simulation
+        state.theta -= .1*SIM.ts_simulation
+        state.altitude += state.theta
     elif motions_time < time_per_motion*3:
-        state.altitude += 10*SIM.ts_simulation
+        state.north += 30*SIM.ts_simulation
+        state.theta -= .1*SIM.ts_simulation
+        state.altitude += state.theta
     elif motions_time < time_per_motion*4:
-        state.psi += 0.1*SIM.ts_simulation
+        state.north += 30*SIM.ts_simulation
+        state.theta += .1*SIM.ts_simulation
+        state.altitude += state.theta
     elif motions_time < time_per_motion*5:
-        state.theta += 0.1*SIM.ts_simulation
-    else:
-        state.phi += 0.1*SIM.ts_simulation
+        state.psi += .1*SIM.ts_simulation
+        state.phi += .1*SIM.ts_simulation
+        state.north += 30*SIM.ts_simulation - .2*state.psi
+        state.east += state.psi
+    elif motions_time < time_per_motion*6:
+        state.psi -= .1*SIM.ts_simulation
+        state.phi -= .1*SIM.ts_simulation
+        state.north += 30*SIM.ts_simulation - .2*state.psi
+        state.east += state.psi
+    elif motions_time < time_per_motion*7:
+        state.psi -= .1*SIM.ts_simulation
+        state.phi -= .1*SIM.ts_simulation
+        state.north += 30*SIM.ts_simulation + .2*state.psi
+        state.east += state.psi
+    elif motions_time < time_per_motion*8:
+        state.psi += .1*SIM.ts_simulation
+        state.phi += .1*SIM.ts_simulation
+        state.north += 30*SIM.ts_simulation + .2*state.psi
+        state.east += state.psi
+
     # -------update viewer and video-------------
     mav_view.update(state)
     mav_view.process_app()
@@ -62,8 +88,7 @@ while sim_time < end_time:
     # -------increment time-------------
     sim_time += SIM.ts_simulation
     motions_time += SIM.ts_simulation
-    if motions_time >= time_per_motion*6:
-        motions_time = 0
+
 
     # -------update video---------------
     if VIDEO is True:
