@@ -85,11 +85,11 @@ class DrawMAV:
         # points are in XYZ coordinates
         #   define the points on the MAV according to Appendix C.3
         points = self.unit_length * np.array([
-            [0.5, 0, 0.1],  # point 1 [0]
-            [-.3, .2, -.3],  # point 2 [1]
-            [-.3, -.2, -.3],  # point 3 [2]
-            [-.3, -.2, .25],  # point 4 [3]
-            [-.3, .2, .25],  # point 5 [4]
+            [1, 0, 0.1],  # point 1 [0]
+            [.5, .2, -.3],  # point 2 [1]
+            [.5, -.2, -.3],  # point 3 [2]
+            [.5, -.2, .25],  # point 4 [3]
+            [.5, .2, .25],  # point 5 [4]
             [-4.5, 0, 0],  # point 6 [5]
             [0, 3, 0],  # point 7 [6]
             [-.75, 3, 0],  # point 8 [7]
