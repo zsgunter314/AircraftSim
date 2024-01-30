@@ -16,7 +16,7 @@ class MavViewer():
         # initialize Qt gui application and window
         self.app = app  # initialize QT, external so that only one QT process is running
         self.window = gl.GLViewWidget()  # initialize the view object
-        self.window.setWindowTitle('Spacecraft Viewer')
+        self.window.setWindowTitle('Mav Viewer')
         grid = gl.GLGridItem() # make a grid to represent the ground
         grid.scale(20, 20, 20) # set the size of the grid (distance between each line)
         self.window.addItem(grid) # add grid to viewer
