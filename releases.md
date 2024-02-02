@@ -4,5 +4,6 @@ Repository Description: Airplane simulation in Python to support ECE 5353 Spring
 
 Releases:
 
+Release 0.1.2 -- Added airplane visualization and a simple flight path demo to the simulation
 Release 0.1.1 -- Hello world, basic files added, pipenv added
 Release 0.0.1 -- Initial commit and repo set up
