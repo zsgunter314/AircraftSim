@@ -1,5 +1,8 @@
 #hook's gitignore files
 Pipfile.lock
+*.DS_Store
+*.bak
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
