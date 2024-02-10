@@ -113,8 +113,8 @@ class MavDynamics:
 
         # Position Kinematics
         north_dot = u*(e1**2 + e0**2 - e2**2 - e3**2) + v*2*(e1*e2 - e3*e0) + w*2*(e1*e3 + e2*e0)
-        east_dot = 0
-        down_dot = 0
+        east_dot = u*2*(e1*e2+e3*e0) + v*(e2**2 + e0**2 - e1**2 - e3**2) + w*2*(e2*e3 - e1*e0)
+        down_dot = u*2*(e1*e3-e2*e0) + v*2*(e2*e3 + e1*e0) + w*(e3**2 + e0**2 - e1**2 - e2**2)
 
         # Position Dynamics
         u_dot = (r*v-q*w) + fx/MAV.mass
@@ -129,9 +129,9 @@ class MavDynamics:
         e3_dot = .5*(r*e0+q*e1-p*e2)
 
         # rotatonal dynamics
-        p_dot = 0
-        q_dot = 0
-        r_dot = 0
+        p_dot = (MAV.gamma1*p*q - MAV.gamma2*q*r) + (MAV.gamma3*l + MAV.gamma4*n)
+        q_dot = (MAV.gamma5*p*r - MAV.gamma6*(p**2 - r**2)) + ((1/MAV.Jy)*m)
+        r_dot = (MAV.gamma7*p*q - MAV.gamma1*q*r) + (MAV.gamma4*l + MAV.gamma8*n)
         
 
         # collect the derivative of the states

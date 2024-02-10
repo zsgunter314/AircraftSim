@@ -16,7 +16,7 @@ theta0 = 0.  # initial pitch angle
 psi0 = 0.0  # initial yaw angle
 p0 = 0  # initial roll rate
 q0 = 0  # initial pitch rate
-r0 = .5  # initial yaw rate
+r0 = 0  # initial yaw rate
 Va0 = np.sqrt(u0**2+v0**2+w0**2)
 #   Quaternion State
 e = euler_to_quaternion(phi0, theta0, psi0)

@@ -50,18 +50,61 @@ delta = MsgDelta()
 
 # initialize the simulation time
 sim_time = SIM.start_time
-end_time = 60
+time_per_motion = 3
+end_time = 18
 
 # main simulation loop
 print("Press 'Esc' to exit...")
 while sim_time < end_time:
     # ------- vary forces and moments to check dynamics -------------
-    fx = 0  # 10
-    fy = 0  # 10
-    fz = 0  # 10
-    Mx = 0  # 0.1
-    My = 0  # 0.1
-    Mz = 0  # 0.1
+    if sim_time < time_per_motion:
+        fx = 0  # 10
+        fy = 0  # 10
+        fz = -50  # 10
+        Mx = 0  # 0.1
+        My = .05  # 0.1
+        Mz = 0  # 0.1
+        print("1")
+    elif sim_time < 2*time_per_motion:
+        fx = 0  # 10
+        fy = 0  # 10
+        fz = 50  # 10
+        Mx = 0  # 0.1
+        My = -.05  # 0.1
+        Mz = 0  # 0.1
+        print("2")
+    elif sim_time < 3*time_per_motion:
+        fx = 0  # 10
+        fy = 50  # 10
+        fz = 0  # 10
+        Mx = .05  # 0.1
+        My = -.05  # 0.1
+        Mz = .05  # 0.1
+        print("3")
+    elif sim_time < 4*time_per_motion:
+        fx = 0  # 10
+        fy = -50  # 10
+        fz = 0  # 10
+        Mx = -.05  # 0.1
+        My = .05  # 0.1
+        Mz = -.05  # 0.1
+        print("4")
+    elif sim_time < 5*time_per_motion:
+        fx = 0  # 10
+        fy = 0  # 10
+        fz = 0  # 10
+        Mx = -.05  # 0.1
+        My = 0  # 0.1
+        Mz = -.05  # 0.1
+        print("5")
+    elif sim_time < 6*time_per_motion:
+        fx = 0  # 10
+        fy = 0  # 10
+        fz = 0  # 10
+        Mx = .05  # 0.1
+        My = 0  # 0.1
+        Mz = .05  # 0.1
+        print("6")
     forces_moments = np.array([[fx, fy, fz, Mx, My, Mz]]).T
 
     # ------- physical system -------------
