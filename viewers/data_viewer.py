@@ -191,9 +191,9 @@ class DataViewer:
             self._plotter.add_data_point(plot_id='bias', data_label='bx', xvalue=t, yvalue=self.__rad_to_deg(true_state.bx))
             self._plotter.add_data_point(plot_id='bias', data_label='by', xvalue=t, yvalue=self.__rad_to_deg(true_state.by))
             self._plotter.add_data_point(plot_id='bias', data_label='bz', xvalue=t, yvalue=self.__rad_to_deg(true_state.bz))
-            self._plotter.add_data_point(plot_id='u', data_label='u', xvalue=t, yvalue=true_state.u)
-            self._plotter.add_data_point(plot_id='v', data_label='v', xvalue=t, yvalue=true_state.v)
-            self._plotter.add_data_point(plot_id='w', data_label='w', xvalue=t, yvalue=true_state.w)
+            # self._plotter.add_data_point(plot_id='u', data_label='u', xvalue=t, yvalue=true_state.u)
+            # self._plotter.add_data_point(plot_id='v', data_label='v', xvalue=t, yvalue=true_state.v)
+            # self._plotter.add_data_point(plot_id='w', data_label='w', xvalue=t, yvalue=true_state.w)
         #add the estimated state data
         if estimated_state != None:
             self._plotter.add_data_point(plot_id='pn', data_label='pn_e', xvalue=t, yvalue=estimated_state.north)

@@ -14,7 +14,7 @@ from models.mav_dynamics import MavDynamics as MavDynamicsForces
 from message_types.msg_state import MsgState
 from message_types.msg_delta import MsgDelta
 import parameters.aerosonde_parameters as MAV
-from tools.rotations import quaternion_to_rotation, quaternion_to_euler
+from tools.rotations import quaternion_to_rotation, quaternion_to_euler, euler_to_rotation
 
 
 class MavDynamics(MavDynamicsForces):
@@ -56,9 +56,15 @@ class MavDynamics(MavDynamicsForces):
     def _update_velocity_data(self, wind=np.zeros((6,1))):
         steady_state = wind[0:3]
         gust = wind[3:6]
-
+        Vg_b = self._state[3:6]
         ##### TODO #####
         # convert wind vector from world to body frame (self._wind = ?)
+        Va_b = Vg_b - steady_state
+        ur, vr, wr = Va_b[:,0]
+        self._Va = np.linalg.norm(Va_b, axis=0)[0]
+        self._alpha = np.arctan2(wr,ur)
+        self._beta = np.arcsin(vr/self._Va)
+
 
         # velocity vector relative to the airmass ([ur , vr, wr]= ?)
 
@@ -77,16 +83,36 @@ class MavDynamics(MavDynamicsForces):
         ##### TODO ######
         # extract states (phi, theta, psi, p, q, r)
 
+       
+        phi, theta, psi = quaternion_to_euler(self._state[6:10])
+        p = self._state.item(10)
+        q = self._state.item(11)
+        r = self._state.item(12)
+        fg_b = np.matmul(euler_to_rotation(phi, theta, psi).T, [[0], [0], [MAV.mass*MAV.gravity]])
+
+        M_minus = np.exp(-MAV.M*self._alpha - MAV.alpha0)
+        M_plus = np.exp(MAV.M*self._alpha + MAV.alpha0)
+        sigmoid = (1 + M_minus + M_plus)/((1 + M_minus)*(1 + M_plus))
+        CL = (1-sigmoid)*(MAV.C_L_0 + MAV.C_L_alpha*self._alpha) + sigmoid*(2*np.sign(self._alpha)*np.sin(self._alpha)**2 * np.cos(self._alpha))
+        CD = MAV.C_D_p + (MAV.C_L_0 + MAV.C_L_alpha * self._alpha)**2 / (np.pi * MAV.e * MAV.AR)
+
+        q_bar = .5 * MAV.rho * self._Va**2
+        F_lift = q_bar * MAV.S_wing * (CL + MAV.C_L_delta_e * delta.elevator)
+        F_drag = q_bar * MAV.S_wing * (CD + MAV.C_D_delta_e * delta.elevator)
+
+
         # compute gravitational forces ([fg_x, fg_y, fg_z])
 
 
 
         # compute Lift and Drag coefficients (CL, CD)
 
+        
+
         # compute Lift and Drag Forces (F_lift, F_drag)
 
         # propeller thrust and torque
-        # thrust_prop, torque_prop = self._motor_thrust_torque(self._Va, delta.throttle)
+        thrust_prop, torque_prop = self._motor_thrust_torque(self._Va, delta.throttle)
 
         # compute longitudinal forces in body frame (fx, fz)
 
