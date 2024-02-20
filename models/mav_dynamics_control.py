@@ -78,7 +78,7 @@ class MavDynamics(MavDynamicsForces):
         """
         return the forces on the UAV based on the state, wind, and control surfaces
         :param delta: np.matrix(delta_a, delta_e, delta_r, delta_t)
-        :return: Forces and Moments on the UAV np.matrix(Fx, Fy, Fz, Ml, Mn, Mm)
+        :return: Forces and Moments on the UAV np.matrix(Fx, Fy, Fz, Ml, Mn, Mm) <--- Fuck the author for making this mistake
         """
         ##### TODO ######
         # extract states (phi, theta, psi, p, q, r)
@@ -117,17 +117,17 @@ class MavDynamics(MavDynamicsForces):
         thrust_prop, torque_prop = self._motor_thrust_torque(self._Va, delta.throttle)
 
         # compute longitudinal forces in body frame (fx, fz)
-        fx = -F_drag * np.cos(self._alpha) + F_lift * np.sin(self._alpha)
+        fx = -F_drag * np.cos(self._alpha) + F_lift * np.sin(self._alpha) + thrust_prop
         fz = -F_drag * np.sin(self._alpha) - F_lift * np.cos(self._alpha)
         # compute lateral forces in body frame (fy)
         fy = .5 * MAV.rho * self._Va**2 * MAV.S_wing * (MAV.C_Y_0 + MAV.C_Y_beta * self._beta + MAV.C_Y_p * ((MAV.b * p)/(2*self._Va)) + MAV.C_Y_r*((MAV.b * r)/(2*self._Va)) + MAV.C_Y_delta_a*delta.aileron + MAV.C_Y_delta_r*delta.rudder)
         # compute logitudinal torque in body frame (My)
         m = .5 * MAV.rho * self._Va**2 * MAV.S_wing * MAV.c * (MAV.C_m_0 + MAV.C_m_alpha*self._alpha + MAV.C_m_q*((MAV.c * q)/(2 * self._Va)) + MAV.C_m_delta_e * delta.elevator) # I am not sure if the correct MAV.c is used here
         # compute lateral torques in body frame (Mx, Mz)
-        l = .5 * MAV.rho * self._Va**2 * MAV.S_wing * MAV.b * (MAV.C_ell_0 + MAV.C_ell_beta*self._beta + MAV.C_ell_p*((MAV.b * p)/(2*self._Va)) + MAV.C_ell_r*((MAV.b*r)/(2*self._Va)) + MAV.C_ell_delta_a*delta.aileron + MAV.C_ell_delta_r*delta.rudder)
+        l = .5 * MAV.rho * self._Va**2 * MAV.S_wing * MAV.b * (MAV.C_ell_0 + MAV.C_ell_beta*self._beta + MAV.C_ell_p*((MAV.b * p)/(2*self._Va)) + MAV.C_ell_r*((MAV.b*r)/(2*self._Va)) + MAV.C_ell_delta_a*delta.aileron + MAV.C_ell_delta_r*delta.rudder) + torque_prop
         n = .5 * MAV.rho * self._Va**2 * MAV.S_wing * MAV.b * (MAV.C_n_0 + MAV.C_n_beta * self._beta + MAV.C_n_p*((MAV.b*p)/(2*self._Va)) + MAV.C_n_r*((MAV.b*r)/(2*self._Va)) + MAV.C_n_delta_a*delta.aileron + MAV.C_n_delta_r*delta.rudder)
 
-        forces_moments = np.array([[fx, fy, fz, l, n, m]]).T
+        forces_moments = np.array([[fx, fy, fz, l, m, n]]).T
         return forces_moments
 
     def _motor_thrust_torque(self, Va, delta_t):
@@ -140,7 +140,7 @@ class MavDynamics(MavDynamicsForces):
         b = ((MAV.C_Q1 * MAV.rho * Va * np.power(MAV.D_prop, 4)) / (2*np.pi)) + ((MAV.KQ * MAV.KV)/MAV.R_motor)
         c = (MAV.C_Q2 * MAV.rho * Va**2 * np.power(MAV.D_prop, 3)) - ((MAV.KQ * v_in) / MAV.R_motor) + (MAV.KQ * MAV.i0)
 
-        omega_op = (-b + np.sqrt(b**2 - 4*a*c)) / 2 * a
+        omega_op = (-b + np.sqrt(b**2 - 4*a*c)) / (2 * a)
 
         J_op = (2*np.pi*Va) / (omega_op * MAV.D_prop)
 
@@ -153,6 +153,8 @@ class MavDynamics(MavDynamicsForces):
         thrust_prop = MAV.rho * (omega_op / (2 * np.pi))**2 * np.power(MAV.D_prop, 4) * CT
         torque_prop = MAV.rho * (omega_op / (2 * np.pi))**2 * np.power(MAV.D_prop, 5) * CQ
 
+        print(Va)
+        print("thrust:", thrust_prop)
         return thrust_prop, torque_prop
 
     def _update_true_state(self):

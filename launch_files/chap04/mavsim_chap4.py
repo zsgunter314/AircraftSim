@@ -20,6 +20,7 @@ from models.wind_simulation import WindSimulation
 from viewers.mav_viewer import MavViewer
 from viewers.data_viewer import DataViewer
 from message_types.msg_delta import MsgDelta
+import keyboard
 
 #quitter = QuitListener()
 
@@ -54,15 +55,40 @@ sim_time = SIM.start_time
 plot_time = sim_time
 end_time = 60
 
+delta.elevator = -0.1248
+delta.aileron = 0.001836
+delta.rudder = -0.0003026
+delta.throttle = 0.6768
 # main simulation loop
 print("Press 'Esc' to exit...")
 while sim_time < end_time:
     # ------- set control surfaces -------------
-    delta.elevator = -0.1248
-    delta.aileron = 0.001836
-    delta.rudder = -0.0003026
-    delta.throttle = 0.6768
 
+    if keyboard.is_pressed('w'):
+        delta.elevator += .01
+
+    if keyboard.is_pressed('s'):
+        delta.elevator -= .01
+
+    if keyboard.is_pressed('a'):
+        delta.aileron -= .001
+
+    if keyboard.is_pressed('d'):
+        delta.aileron += .001
+
+    if keyboard.is_pressed('i') and delta.throttle < 1:
+        delta.throttle += .05
+
+    if keyboard.is_pressed('k') and delta.throttle > .2:
+        delta.throttle -= .05
+
+    if keyboard.is_pressed('j'):
+        delta.rudder += .001
+
+    if keyboard.is_pressed('l'):
+        delta.rudder -= .001
+
+    
     # ------- physical system -------------
     current_wind = wind.update()  # get the new wind vector
     mav.update(delta, current_wind)  # propagate the MAV dynamics
