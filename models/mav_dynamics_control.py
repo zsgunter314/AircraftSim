@@ -90,8 +90,8 @@ class MavDynamics(MavDynamicsForces):
         r = self._state.item(12)
         fg_b = np.matmul(euler_to_rotation(phi, theta, psi).T, [[0], [0], [MAV.mass*MAV.gravity]])
 
-        M_minus = np.exp(-MAV.M*self._alpha - MAV.alpha0)
-        M_plus = np.exp(MAV.M*self._alpha + MAV.alpha0)
+        M_minus = np.exp(-MAV.M*(self._alpha - MAV.alpha0))
+        M_plus = np.exp(MAV.M*(self._alpha + MAV.alpha0))
         sigmoid = (1 + M_minus + M_plus)/((1 + M_minus)*(1 + M_plus))
         CL = (1-sigmoid)*(MAV.C_L_0 + MAV.C_L_alpha*self._alpha) + sigmoid*(2*np.sign(self._alpha)*np.sin(self._alpha)**2 * np.cos(self._alpha))
         CD = MAV.C_D_p + (MAV.C_L_0 + MAV.C_L_alpha * self._alpha)**2 / (np.pi * MAV.e * MAV.AR)

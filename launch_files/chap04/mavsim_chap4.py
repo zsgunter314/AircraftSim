@@ -53,7 +53,7 @@ delta = MsgDelta()
 # initialize the simulation time
 sim_time = SIM.start_time
 plot_time = sim_time
-end_time = 60
+end_time =120
 
 delta.elevator = -0.1248
 delta.aileron = 0.001836
@@ -65,10 +65,10 @@ while sim_time < end_time:
     # ------- set control surfaces -------------
 
     if keyboard.is_pressed('w'):
-        delta.elevator += .01
+        delta.elevator += .005
 
     if keyboard.is_pressed('s'):
-        delta.elevator -= .01
+        delta.elevator -= .005
 
     if keyboard.is_pressed('a'):
         delta.aileron -= .001
@@ -77,10 +77,10 @@ while sim_time < end_time:
         delta.aileron += .001
 
     if keyboard.is_pressed('i') and delta.throttle < 1:
-        delta.throttle += .05
+        delta.throttle += .001
 
     if keyboard.is_pressed('k') and delta.throttle > .2:
-        delta.throttle -= .05
+        delta.throttle -= .001
 
     if keyboard.is_pressed('j'):
         delta.rudder += .001
