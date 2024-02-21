@@ -109,7 +109,7 @@ class MavDynamics(MavDynamicsForces):
 
         # compute Lift and Drag coefficients (CL, CD)
 
-        
+    
 
         # compute Lift and Drag Forces (F_lift, F_drag)
 
@@ -117,10 +117,10 @@ class MavDynamics(MavDynamicsForces):
         thrust_prop, torque_prop = self._motor_thrust_torque(self._Va, delta.throttle)
 
         # compute longitudinal forces in body frame (fx, fz)
-        fx = -F_drag * np.cos(self._alpha) + F_lift * np.sin(self._alpha) + thrust_prop
-        fz = -F_drag * np.sin(self._alpha) - F_lift * np.cos(self._alpha)
+        fx = .5*MAV.rho*self._Va**2 * MAV.S_wing*((-CD*np.cos(self._alpha) + CL*np.sin(self._alpha)) + (-MAV.C_D_q*np.cos(self._alpha) + MAV.C_L_q*np.sin(self._alpha))*((MAV.c*q)/(2*self._Va)) + (-MAV.C_D_delta_e*np.cos(self._alpha) + MAV.C_L_delta_e*np.sin(self._alpha))*delta.elevator) + thrust_prop + fgx
+        fz = .5*MAV.rho*self._Va**2 * MAV.S_wing*((-CD*np.sin(self._alpha) - CL*np.cos(self._alpha)) + (-MAV.C_D_q*np.sin(self._alpha) - MAV.C_L_q*np.cos(self._alpha))*((MAV.c*q)/(2*self._Va)) + (-MAV.C_D_delta_e*np.sin(self._alpha) - MAV.C_L_delta_e*np.cos(self._alpha))*delta.elevator) + fgz
         # compute lateral forces in body frame (fy)
-        fy = .5 * MAV.rho * self._Va**2 * MAV.S_wing * (MAV.C_Y_0 + MAV.C_Y_beta * self._beta + MAV.C_Y_p * ((MAV.b * p)/(2*self._Va)) + MAV.C_Y_r*((MAV.b * r)/(2*self._Va)) + MAV.C_Y_delta_a*delta.aileron + MAV.C_Y_delta_r*delta.rudder)
+        fy = .5 * MAV.rho * self._Va**2 * MAV.S_wing * (MAV.C_Y_0 + MAV.C_Y_beta * self._beta + MAV.C_Y_p * ((MAV.b * p)/(2*self._Va)) + MAV.C_Y_r*((MAV.b * r)/(2*self._Va)) + MAV.C_Y_delta_a*delta.aileron + MAV.C_Y_delta_r*delta.rudder) + fgy
         # compute logitudinal torque in body frame (My)
         m = .5 * MAV.rho * self._Va**2 * MAV.S_wing * MAV.c * (MAV.C_m_0 + MAV.C_m_alpha*self._alpha + MAV.C_m_q*((MAV.c * q)/(2 * self._Va)) + MAV.C_m_delta_e * delta.elevator) # I am not sure if the correct MAV.c is used here
         # compute lateral torques in body frame (Mx, Mz)
