@@ -77,10 +77,10 @@ while sim_time < end_time:
         delta.aileron += .001
 
     if keyboard.is_pressed('i') and delta.throttle < 1:
-        delta.throttle += .001
+        delta.throttle += .05
 
     if keyboard.is_pressed('k') and delta.throttle > .2:
-        delta.throttle -= .001
+        delta.throttle -= .05
 
     if keyboard.is_pressed('j'):
         delta.rudder += .001
