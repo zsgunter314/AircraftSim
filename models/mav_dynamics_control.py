@@ -150,12 +150,12 @@ class MavDynamics(MavDynamicsForces):
         # Angular speed of propeller (omega_p = ?)
 
         # thrust and torque due to propeller
-        thrust_prop = MAV.rho * (omega_op / (2 * np.pi))**2 * np.power(MAV.D_prop, 4) * CT
-        torque_prop = MAV.rho * (omega_op / (2 * np.pi))**2 * np.power(MAV.D_prop, 5) * CQ
+        thrust_prop = .5 * MAV.rho * MAV.S_prop * ((MAV.K_motor * delta_t)**2 - Va**2)
+        torque_prop = -MAV.rho * (omega_op / (2 * np.pi))**2 * np.power(MAV.D_prop, 5) * CQ
 
-        print(Va)
+        print("Airspeed:", Va)
         print("thrust:", thrust_prop)
-        return thrust_prop, torque_prop
+        return thrust_prop, 0
 
     def _update_true_state(self):
         # rewrite this function because we now have more information
