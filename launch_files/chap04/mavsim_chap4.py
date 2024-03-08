@@ -22,6 +22,8 @@ from viewers.data_viewer import DataViewer
 from message_types.msg_delta import MsgDelta
 import keyboard
 
+import Trim
+
 #quitter = QuitListener()
 
 VIDEO = False
@@ -50,15 +52,25 @@ wind = WindSimulation(SIM.ts_simulation)
 mav = MavDynamics(SIM.ts_simulation)
 delta = MsgDelta()
 
+Va0 = 30
+alpha0 = 0
+beta0 = 0
+mav.initialize_velocity(Va0, alpha0, beta0)
+
 # initialize the simulation time
 sim_time = SIM.start_time
 plot_time = sim_time
 end_time =120
 
 delta.elevator = -0.1248
-delta.aileron = 0.001836
-delta.rudder = -0.0003026
+delta.aileron = 0.0
+delta.rudder = 0.0
 delta.throttle = 0.6768
+
+alpha, elevator, throttle = Trim.compute_trim(mav, delta)
+
+Trim.compute_trim(mav, delta)
+exit()
 # main simulation loop
 print("Press 'Esc' to exit...")
 while sim_time < end_time:
