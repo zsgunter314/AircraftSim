@@ -70,11 +70,16 @@ delta.throttle = 0.6768
 alpha, elevator, throttle = Trim.compute_trim(mav, delta)
 
 Trim.compute_trim(mav, delta)
-exit()
+
 # main simulation loop
 print("Press 'Esc' to exit...")
 while sim_time < end_time:
     # ------- set control surfaces -------------
+
+    if abs((sim_time-30)) < .01:
+        delta.elevator += .1
+    else:
+        delta.elevator = elevator
 
     if keyboard.is_pressed('w'):
         delta.elevator += .005
