@@ -22,7 +22,7 @@ from viewers.data_viewer import DataViewer
 from message_types.msg_delta import MsgDelta
 import keyboard
 
-import Trim
+from Trim import compute_trim
 
 #quitter = QuitListener()
 
@@ -67,19 +67,22 @@ delta.aileron = 0.0
 delta.rudder = 0.0
 delta.throttle = 0.6768
 
-alpha, elevator, throttle = Trim.compute_trim(mav, delta)
+alpha, elevator, throttle = compute_trim(mav, delta)
+mav.initialize_velocity(Va0, alpha, beta0)
+delta.elevator = elevator
+delta.throttle = throttle
 
-Trim.compute_trim(mav, delta)
+compute_trim(mav, delta)
 
 # main simulation loop
 print("Press 'Esc' to exit...")
 while sim_time < end_time:
     # ------- set control surfaces -------------
 
-    if abs((sim_time-30)) < .01:
-        delta.elevator += .1
-    else:
-        delta.elevator = elevator
+    # if abs((sim_time-30)) < .01:
+    #     delta.elevator += .1
+    # else:
+    #     delta.elevator = elevator
 
     if keyboard.is_pressed('w'):
         delta.elevator += .005

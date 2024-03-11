@@ -7,7 +7,7 @@ def compute_trim(mav: MavDynamics, delta: MsgDelta):
     # parameters to input for trim
     # alpha, elevator, throttle
 
-    x0 =[mav._alpha, delta.elevator, delta.throttle]
+    x0 = [mav._alpha, delta.elevator, delta.throttle]
     bounds = [(0, np.deg2rad(12)), (-1,1), (0,1)]
     res = minimize(mav.calculate_trim_output, x0, bounds=bounds, method='SLSQP')
     print(res)

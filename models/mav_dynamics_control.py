@@ -24,6 +24,7 @@ class MavDynamics(MavDynamicsForces):
         self._wind = np.array([[0.], [0.], [0.]])  # wind in NED frame in meters/sec
         # store forces to avoid recalculation in the sensors function
         self._forces = np.array([[0.], [0.], [0.]])
+        self.initialize_velocity(MAV.u0, 0, 0)
 
     def initialize_velocity(self, Va, alpha, beta):
         
@@ -32,6 +33,7 @@ class MavDynamics(MavDynamicsForces):
         self._beta = beta
         self._state[3] = Va*np.cos(alpha)*np.cos(beta)
         self._state[4] = Va
+        self._state[5] = Va*np.sin(alpha)*np.cos(beta)
         # update velocity data and forces and moments
         self._update_velocity_data()
         self._forces_moments(delta=MsgDelta())
@@ -40,9 +42,9 @@ class MavDynamics(MavDynamicsForces):
 
     def calculate_trim_output(self, x):
         alpha, elevator, throttle = x
-        phi, theta, psi = euler_to_quaternion(self._state[6:10])
-        self._state[6:10] = euler_to_quaternion(phi, alpha, psi)
-        self.intitialize_velocity(self._Va, alpha, self._beta)
+        # phi, theta, psi = euler_to_quaternion(self._state[6:10])
+        # self._state[6:10] = euler_to_quaternion(phi, alpha, psi)
+        self.initialize_velocity(self._Va, alpha, self._beta)
         delta=MsgDelta()
         delta.elevator = elevator
         delta.throttle = throttle
