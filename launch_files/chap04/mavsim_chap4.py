@@ -60,7 +60,7 @@ mav.initialize_velocity(Va0, alpha0, beta0)
 # initialize the simulation time
 sim_time = SIM.start_time
 plot_time = sim_time
-end_time =120
+end_time = 120
 
 delta.elevator = -0.1248
 delta.aileron = 0.0
@@ -78,10 +78,10 @@ print("Press 'Esc' to exit...")
 while sim_time < end_time:
     # ------- set control surfaces -------------
 
-    # if abs((sim_time-30)) < .01:
-    #     delta.elevator += .1
-    # else:
-    #     delta.elevator = elevator
+    if abs((sim_time-30)) < .01:
+        delta.elevator += .1
+    else:
+        delta.elevator = elevator
 
     if keyboard.is_pressed('w'):
         delta.elevator += .005
