@@ -32,7 +32,7 @@ class MavDynamics(MavDynamicsForces):
         self._alpha = alpha
         self._beta = beta
         self._state[3] = Va*np.cos(alpha)*np.cos(beta)
-        self._state[4] = Va
+        self._state[4] = Va*np.sin(beta)
         self._state[5] = Va*np.sin(alpha)*np.cos(beta)
         # update velocity data and forces and moments
         self._update_velocity_data()
@@ -42,15 +42,13 @@ class MavDynamics(MavDynamicsForces):
 
     def calculate_trim_output(self, x):
         alpha, elevator, throttle = x
-        # phi, theta, psi = euler_to_quaternion(self._state[6:10])
-        # self._state[6:10] = euler_to_quaternion(phi, alpha, psi)
+        phi, theta, psi = quaternion_to_euler(self._state[6:10])
+        self._state[6:10] = euler_to_quaternion(phi, alpha, psi)
         self.initialize_velocity(self._Va, alpha, self._beta)
         delta=MsgDelta()
         delta.elevator = elevator
         delta.throttle = throttle
         forces = self._forces_moments(delta=delta)
-
-
 
         return(forces[0]**2 + forces[2]**2 + forces[4]**2)
     # return ...

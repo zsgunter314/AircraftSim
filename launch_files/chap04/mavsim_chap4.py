@@ -72,7 +72,6 @@ mav.initialize_velocity(Va0, alpha, beta0)
 delta.elevator = elevator
 delta.throttle = throttle
 
-compute_trim(mav, delta)
 
 # main simulation loop
 print("Press 'Esc' to exit...")
