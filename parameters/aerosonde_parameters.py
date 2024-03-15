@@ -8,7 +8,7 @@ from tools.rotations import euler_to_quaternion
 north0 = 0.  # initial north position
 east0 = 0.  # initial east position
 down0 = -400.0  # initial down position
-u0 = 25.  # initial velocity along body x-axis
+u0 = 25  # initial velocity along body x-axis
 Va0 = 25
 alpha0_cool = np.deg2rad(3) #degrees
 u0 = np.sqrt(Va0**2 / (1+np.tan(alpha0_cool)**2))

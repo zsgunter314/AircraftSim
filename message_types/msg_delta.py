@@ -13,10 +13,10 @@ import numpy as np
 
 class MsgDelta:
     def __init__(self,
-                 elevator=0.0,
+                 elevator=-0.1248,
                  aileron=0.0,
                  rudder=0.0,
-                 throttle=0.5,
+                 throttle=0.6768,
                  azimuth_cmd=0.0,
                  elevation_cmd=0.0):
         self.elevator = elevator  # elevator command

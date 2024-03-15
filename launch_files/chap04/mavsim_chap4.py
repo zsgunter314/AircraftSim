@@ -78,7 +78,7 @@ print("Press 'Esc' to exit...")
 while sim_time < end_time:
     # ------- set control surfaces -------------
 
-    if abs((sim_time-30)) < .01:
+    if abs((sim_time-3)) < .01:
         delta.elevator += .1
     else:
         delta.elevator = elevator
