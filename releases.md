@@ -4,6 +4,7 @@ Repository Description: Airplane simulation in Python to support ECE 5353 Spring
 
 Releases:
 
+Release 0.5.2 -- Made a lot of changes and fixed issues in forces_moments function in mav_dynamics_control that was causing issues
 Release 0.5.1 -- Implemented Trim functionality into chapter 5 project and completed compute_models.py file
 Release 0.4.1 -- Added automatic trim functionality
 Release 0.3.1 -- Added all flight dynamics to the MAV and added controls for the user 12/12.  Good.
