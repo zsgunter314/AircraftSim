@@ -1,13 +1,3 @@
-"""
-mavDynamics 
-    - this file implements the dynamic equations of motion for MAV
-    - use unit quaternion for the attitude state
-    
-mavsim_python
-    - Beard & McLain, PUP, 2012
-    - Update history:  
-        2/24/2020 - RWB
-"""
 import numpy as np
 from models.mav_dynamics import MavDynamics as MavDynamicsForces
 # load message types
@@ -17,6 +7,7 @@ import parameters.aerosonde_parameters as MAV
 from tools.rotations import quaternion_to_rotation, quaternion_to_euler, euler_to_rotation, euler_to_quaternion
 
 
+
 class MavDynamics(MavDynamicsForces):
     def __init__(self, Ts):
         super().__init__(Ts)
@@ -24,16 +15,16 @@ class MavDynamics(MavDynamicsForces):
         self._wind = np.array([[0.], [0.], [0.]])  # wind in NED frame in meters/sec
         # store forces to avoid recalculation in the sensors function
         self._forces = np.array([[0.], [0.], [0.]])
-        self.initialize_velocity(MAV.u0, 0, 0)
-
-    def initialize_velocity(self, Va, alpha, beta):
+        self.initialize_velocity(MAV.u0, 0., 0.)
         
+    def initialize_velocity(self, Va, alpha, beta):
         self._Va = Va
         self._alpha = alpha
         self._beta = beta
-        self._state[3] = Va*np.cos(alpha)*np.cos(beta)
-        self._state[4] = Va*np.sin(beta)
-        self._state[5] = Va*np.sin(alpha)*np.cos(beta)
+        self._state[3]= Va*np.cos(alpha)*np.cos(beta)
+        self._state[4]= Va*np.sin(beta)
+        self._state[5]= Va*np.sin(alpha)*np.cos(beta)
+        
         # update velocity data and forces and moments
         self._update_velocity_data()
         self._forces_moments(delta=MsgDelta())
@@ -44,15 +35,14 @@ class MavDynamics(MavDynamicsForces):
         alpha, elevator, throttle = x
         phi, theta, psi = quaternion_to_euler(self._state[6:10])
         self._state[6:10] = euler_to_quaternion(phi, alpha, psi)
+        
         self.initialize_velocity(self._Va, alpha, self._beta)
         delta=MsgDelta()
         delta.elevator = elevator
         delta.throttle = throttle
         forces = self._forces_moments(delta=delta)
-
-        return(forces[0]**2 + forces[2]**2 + forces[4]**2)
-    # return ...
-
+        return(forces[0]**2+forces[2]**2+forces[4]**2)
+        
     ###################################
     # public functions
     def update(self, delta, wind):
@@ -76,33 +66,25 @@ class MavDynamics(MavDynamicsForces):
         steady_state = wind[0:3]
         gust = wind[3:6]
         Vg_b = self._state[3:6]
+
         ##### TODO #####
         # convert wind vector from world to body frame (self._wind = ?)
         Va_b = Vg_b - steady_state
         ur, vr, wr = Va_b[:,0]
-        self._Va = np.linalg.norm(Va_b, axis=0)[0]
-        self._alpha = np.arctan2(wr,ur)
+        
+        self._Va=np.linalg.norm(Va_b, axis=0)[0]
+        self._alpha = np.arctan2(wr, ur)
         self._beta = np.arcsin(vr/self._Va)
 
-
-        # velocity vector relative to the airmass ([ur , vr, wr]= ?)
-
-        # compute airspeed (self._Va = ?)
-
-        # compute angle of attack (self._alpha = ?)
-        
-        # compute sideslip angle (self._beta = ?)
 
     def _forces_moments(self, delta):
         """
         return the forces on the UAV based on the state, wind, and control surfaces
         :param delta: np.matrix(delta_a, delta_e, delta_r, delta_t)
-        :return: Forces and Moments on the UAV np.matrix(Fx, Fy, Fz, Ml, Mn, Mm) <--- Fuck the author for making this mistake
+        :return: Forces and Moments on the UAV np.matrix(Fx, Fy, Fz, Ml, Mn, Mm)
         """
         ##### TODO ######
         # extract states (phi, theta, psi, p, q, r)
-
-       
         phi, theta, psi = quaternion_to_euler(self._state[6:10])
         p = self._state.item(10)
         q = self._state.item(11)
@@ -145,32 +127,33 @@ class MavDynamics(MavDynamicsForces):
         return forces_moments
 
     def _motor_thrust_torque(self, Va, delta_t):
+        
+        
         # compute thrust and torque due to propeller
         ##### TODO #####
         # map delta_t throttle command(0 to 1) into motor input voltage
-        v_in = MAV.V_max * delta_t
+        # v_in = MAV.V_max * delta_t
+        
+        # a = MAV.C_Q0 * MAV.rho * np.power(MAV.D_prop, 5) / ((2*np.pi)**2)
+        # b = (MAV.C_Q1 * MAV.rho * np.power(MAV.D_prop, 4) / (2*np.pi)) * self._Va + MAV.KQ**2/MAV.R_motor
+        # c = MAV.C_Q2 * MAV.rho * np.power(MAV.D_prop, 3) * self._Va**2 - (MAV.KQ/MAV.R_motor) * v_in + MAV.KQ*MAV.i0
 
-        a = (MAV.C_Q0 * MAV.rho * np.power(MAV.D_prop, 5)) / ((2*np.pi)**2)
-        b = ((MAV.C_Q1 * MAV.rho * Va * np.power(MAV.D_prop, 4)) / (2*np.pi)) + ((MAV.KQ * MAV.KV)/MAV.R_motor)
-        c = (MAV.C_Q2 * MAV.rho * Va**2 * np.power(MAV.D_prop, 3)) - ((MAV.KQ * v_in) / MAV.R_motor) + (MAV.KQ * MAV.i0)
+        # omega_p = (-b + np.sqrt(b**2-4*a*c))/(2*a)
+        # J_op = 2*np.pi * self._Va / (omega_p * MAV.D_prop)
+        # C_T = MAV.C_T2 * J_op**2 + MAV.C_T1 * J_op + MAV.C_T0
+        # C_Q = MAV.C_Q2 * J_op**2 + MAV.C_Q1 * J_op + MAV.C_Q0
+        
+        # n = omega_p / (2 *np.pi)
+        # # Angular speed of propeller (omega_p = ?)
 
-        omega_op = (-b + np.sqrt(b**2 - 4*a*c)) / (2 * a)
+        # # thrust and torque due to propeller
+        # thrust_prop = MAV.rho * n**2 * np.power(MAV.D_prop, 4) * C_T
+        # torque_prop = -MAV.rho * n**2 * np.power(MAV.D_prop, 5) * C_Q
+        
+        thrust_prop = 0.5 * MAV.rho * MAV.S_prop * ((MAV.K_motor*delta_t)**2-Va**2)
+        torque_prop = 0
 
-        J_op = (2*np.pi*Va) / (omega_op * MAV.D_prop)
-
-        CT = MAV.C_T2 * J_op**2 + MAV.C_T1 * J_op + MAV.C_T0
-        CQ = MAV.C_Q2 * J_op**2 + MAV.C_Q1 * J_op + MAV.C_Q0
-
-        # Angular speed of propeller (omega_p = ?)
-
-        # thrust and torque due to propeller
-        thrust_prop = .5 * MAV.rho * MAV.S_prop * ((MAV.K_motor * delta_t)**2 - Va**2)
-        torque_prop = -MAV.rho * (omega_op / (2 * np.pi))**2 * np.power(MAV.D_prop, 5) * CQ
-
-        # print("Airspeed:", Va)
-        # print("thrust:", thrust_prop)
-
-        return thrust_prop, 0
+        return thrust_prop, torque_prop
 
     def _update_true_state(self):
         # rewrite this function because we now have more information

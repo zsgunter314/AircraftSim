@@ -57,7 +57,7 @@ def do_trim(mav, Va, alpha):
     delta.throttle = .6768
 
     alpha, elevator, throttle = compute_trim(mav, delta)
-    mav.intialize_velocity(Va0, alpha, beta0)
+    mav.initialize_velocity(Va0, alpha, beta0)
     delta.elevator = elevator
     delta.throttle = throttle
     return delta
