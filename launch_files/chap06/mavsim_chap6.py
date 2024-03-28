@@ -55,7 +55,6 @@ if PLOTS:
 wind = WindSimulation(SIM.ts_simulation)
 mav = MavDynamics(SIM.ts_simulation)
 delta = MsgDelta()
-
 delta = do_trim(mav, Va=25, alpha=0)
 autopilot = Autopilot(delta=delta, mav=mav, ts_control=SIM.ts_simulation)
 

@@ -28,20 +28,19 @@ class Autopilot:
     def __init__(self, delta, mav, ts_control):
 
         self.throttle_from_airspeed = PIControl(
-                        kp=AP.airspeed_throttle_kp,
-                        ki=AP.airspeed_throttle_ki,
+                        kp=airspeed_throttle_kp,
+                        ki=airspeed_throttle_ki,
                         Ts=ts_control,
                         limit=1.0,
                         init_integrator=delta.throttle / airspeed_throttle_ki
                         )
         self.elevator_from_alpha = PIDControl(
             kp = alpha_elevator_kp,
-            kd = alpha_elevator_kd,
             ki = alpha_elevator_ki,
+            kd = alpha_elevator_kd,
             limit=1,
             Ts=ts_control,
-            init_integrator=delta.elevator/alpha_elevator_ki,
-
+            init_integrator=delta.elevator/alpha_elevator_ki
         )
 
         self.yaw_damper = PDControl(kp=yaw_damper_kp, kd=yaw_damper_kd, Ts=ts_control, limit=1)
