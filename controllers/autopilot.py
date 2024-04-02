@@ -16,8 +16,8 @@ from controllers.tf_control import TFControl
 from message_types.msg_state import MsgState
 from message_types.msg_delta import MsgDelta
 
-airspeed_throttle_kp = 0.005 #0.00001
-airspeed_throttle_ki = 0.000001
+airspeed_throttle_kp = 0.001 #0.00001
+airspeed_throttle_ki = 0.0001
 
 yaw_damper_kp = 10.0
 yaw_damper_kd = 1.0
@@ -27,8 +27,8 @@ alpha_elevator_kp = -(1/np.deg2rad(12))
 alpha_elevator_ki = -0.0018
 alpha_elevator_kd = 0.1 * alpha_elevator_kp
 
-alt_kp = .09
-alt_ki = 0.0001
+alt_kp = .05
+alt_ki = 0.005
 alt_kd = .05
 
 gamma_kp= .095
@@ -182,7 +182,7 @@ class Autopilot:
         delta.aileron = self.roll_control.update(cmd_roll, state.phi)
         
         print(state.altitude)
-        
+        print(state.Va)
         
         
         self.commanded_state.altitude = 0
