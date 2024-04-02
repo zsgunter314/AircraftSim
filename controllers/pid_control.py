@@ -8,7 +8,7 @@ import numpy as np
 
 
 class PIDControl:
-    def __init__(self, kp=0.0, ki=0.0, kd=0.0, Ts=0.01, sigma=0.05, limit=1.0, init_integrator=0.0):
+    def __init__(self, kp=0.0, ki=0.0, kd=0.0, Ts=0.01, sigma=0.05, limit=1.0, init_integrator=0.0, max=1, min =-1):
         self.kp = kp
         self.ki = ki
         self.kd = kd
@@ -23,6 +23,8 @@ class PIDControl:
         # gains for differentiator
         self.a1 = (2.0 * sigma - Ts) / (2.0 * sigma + Ts)
         self.a2 = 2.0 / (2.0 * sigma + Ts)
+        self.max = max
+        self.min = min
 
     def update(self, y_ref, y, reset_flag=False):
         if reset_flag is True:

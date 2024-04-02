@@ -24,8 +24,9 @@ from controllers.autopilot import Autopilot
 # from controllers.autopilot_tecs import Autopilot
 from viewers.mav_viewer import MavViewer
 from viewers.data_viewer import DataViewer
-from message_types.msg_delta import MsgDelta
+
 from Trim import do_trim
+from message_types.msg_delta import MsgDelta
 
 #quitter = QuitListener()
 
@@ -54,10 +55,13 @@ if PLOTS:
 # initialize elements of the architecture
 wind = WindSimulation(SIM.ts_simulation)
 mav = MavDynamics(SIM.ts_simulation)
-delta = MsgDelta()
-delta = do_trim(mav, Va=25, alpha=0)
-autopilot = Autopilot(delta=delta, mav=mav, ts_control=SIM.ts_simulation)
 
+
+delta = MsgDelta()
+
+delta = do_trim(mav, Va=25, alpha=np.deg2rad(0))
+
+autopilot = Autopilot(delta=delta, mav=mav, ts_control=SIM.ts_simulation)
 
 # autopilot commands
 from message_types.msg_autopilot import MsgAutopilot
@@ -80,19 +84,22 @@ sim_time = SIM.start_time
 end_time = 100
 
 input_signal = Signals(amplitude=0.3, duration=0.3, start_time=4.0)
+
 # main simulation loop
 print("Press 'Esc' to exit...")
 while sim_time < end_time:
 
     # -------autopilot commands-------------
-    commands.airspeed_command = Va_command.square(sim_time)
-    commands.course_command = course_command.square(sim_time)
-    commands.altitude_command = altitude_command.square(sim_time)
+    # commands.airspeed_command = Va_command.square(sim_time)
+    # commands.course_command = course_command.square(sim_time)
+    # commands.altitude_command = altitude_command.square(sim_time)
 
     # -------autopilot-------------
     estimated_state = mav.true_state  # uses true states in the control
     delta, commanded_state = autopilot.update(commands, estimated_state)
-    delta.rudder = delta.rudder + input_signal.impulse(time=sim_time)
+    # delta.rudder = delta.rudder + input_signal.impulse(time=sim_time)
+    # delta.throttle = delta.throttle + input_signal.impulse(time=sim_time)
+    # delta.elevator = delta.elevator + input_signal.impulse(time=sim_time)
 
     # -------physical system-------------
     current_wind = wind.update()  # get the new wind vector
@@ -118,13 +125,10 @@ while sim_time < end_time:
 
     # -------increment time-------------
     sim_time += SIM.ts_simulation
+    
 
 if SAVE_PLOT_IMAGE:
     data_view.save_plot_image("ch6_plot")
 
 if VIDEO is True:
     video.close()
-
-
-
-

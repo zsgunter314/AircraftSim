@@ -8,13 +8,15 @@ import numpy as np
 
 
 class PIControl:
-    def __init__(self, kp=0.0, ki=0.0, Ts=0.01, limit=1.0, init_integrator=0):
+    def __init__(self, kp=0.0, ki=0.0, Ts=0.01, limit=1.0, init_integrator=0, max=1, min=-1):
         self.kp = kp
         self.ki = ki
         self.Ts = Ts
         self.limit = limit
         self.integrator = init_integrator
         self.error_delay_1 = 0.0
+        self.max = max
+        self.min = min
 
     def update(self, y_ref, y):
 
