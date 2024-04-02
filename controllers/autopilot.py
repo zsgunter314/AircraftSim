@@ -16,8 +16,8 @@ from controllers.tf_control import TFControl
 from message_types.msg_state import MsgState
 from message_types.msg_delta import MsgDelta
 
-airspeed_throttle_kp = .0001 #1/100
-airspeed_throttle_ki = 0.00001
+airspeed_throttle_kp = 0.005 #0.00001
+airspeed_throttle_ki = 0.000001
 
 yaw_damper_kp = 10.0
 yaw_damper_kd = 1.0
@@ -27,21 +27,23 @@ alpha_elevator_kp = -(1/np.deg2rad(12))
 alpha_elevator_ki = -0.0018
 alpha_elevator_kd = 0.1 * alpha_elevator_kp
 
-alt_kp = .05
+alt_kp = .09
 alt_ki = 0.0001
 alt_kd = .05
 
-chi_kp = 0.
-chi_ki = 0.0001
-chi_kd = 0.0
-
-roll_kp = 0.
-roll_ki = 0.0001
-roll_kd = 0.0
-
-gamma_kp= .09
+gamma_kp= .095
 gamma_ki=0.0001
-gamma_kd= .01
+gamma_kd= .011
+
+chi_kp = .2
+chi_ki = 0.0001
+chi_kd = 0.005
+
+roll_kp = 2
+roll_ki = 0.001
+roll_kd = 0.05
+
+
 
 
 class Autopilot:
@@ -79,8 +81,8 @@ class Autopilot:
             ki= alt_ki,
             kd = alt_kd,
             Ts=ts_control,
-            max=np.deg2rad(15),
-            min =np.deg2rad(-15),
+            max=np.deg2rad(50),
+            min =np.deg2rad(-50),
             init_integrator=0.0
         )
         

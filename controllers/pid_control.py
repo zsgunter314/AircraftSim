@@ -8,11 +8,13 @@ import numpy as np
 
 
 class PIDControl:
-    def __init__(self, kp=0.0, ki=0.0, kd=0.0, Ts=0.01, sigma=0.05, limit=1.0, init_integrator=0.0, max=1, min =-1):
+    def __init__(self, kp=0.0, ki=0.0, kd=0.0, Ts=0.01, sigma=0.05, limit=1.0, max=1.0, min=-1.0, init_integrator=0.0):
         self.kp = kp
         self.ki = ki
         self.kd = kd
         self.Ts = Ts
+        self.max = max
+        self.min = min
         self.limit = limit
         self.integrator = init_integrator
         self.error_delay_1 = 0.0
@@ -23,8 +25,6 @@ class PIDControl:
         # gains for differentiator
         self.a1 = (2.0 * sigma - Ts) / (2.0 * sigma + Ts)
         self.a2 = 2.0 / (2.0 * sigma + Ts)
-        self.max = max
-        self.min = min
 
     def update(self, y_ref, y, reset_flag=False):
         if reset_flag is True:
@@ -82,10 +82,10 @@ class PIDControl:
 
     def _saturate(self, u):
         # saturate u at +- self.limit
-        if u >= self.limit:
-            u_sat = self.limit
-        elif u <= -self.limit:
-            u_sat = -self.limit
+        if u >= self.max:
+            u_sat = self.max
+        elif u <= self.min:
+            u_sat = self.min
         else:
             u_sat = u
         return u_sat

@@ -41,10 +41,10 @@ class PIControl:
 
     def _saturate(self, u):
         # saturate u at +- self.limit
-        if u >= self.limit:
-            u_sat = self.limit
-        elif u <= -self.limit:
-            u_sat = -self.limit
+        if u >= self.max:
+            u_sat = self.max
+        elif u <= self.min:
+            u_sat = self.min
         else:
             u_sat = u
         return u_sat
