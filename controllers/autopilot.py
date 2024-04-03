@@ -15,25 +15,26 @@ from controllers.pd_control_with_rate import PDControlWithRate
 from controllers.tf_control import TFControl
 from message_types.msg_state import MsgState
 from message_types.msg_delta import MsgDelta
+from models.mav_dynamics_control import MavDynamics
 
-airspeed_throttle_kp = 0.005 #0.00001
-airspeed_throttle_ki = 0.0005
+airspeed_throttle_kp = 0.05 #0.00001
+airspeed_throttle_ki = 0.05
 
 yaw_damper_kp = 10.0
 yaw_damper_kd = 1.0
 
 
-alpha_elevator_kp = -(1/np.deg2rad(12))
-alpha_elevator_ki = -0.0018
-alpha_elevator_kd = 0.1 * alpha_elevator_kp
+alpha_elevator_kp = -20
+alpha_elevator_ki = -20
+alpha_elevator_kd = -2
 
 alt_kp = .05
-alt_ki = 0.005
-alt_kd = .05
+alt_ki = 0.01
+alt_kd = .0001
 
-gamma_kp= .095
-gamma_ki=0.0001
-gamma_kd= .011
+gamma_kp= 1.2
+gamma_ki= 1
+gamma_kd= 0
 
 chi_kp = .2
 chi_ki = 0.0001
@@ -81,8 +82,8 @@ class Autopilot:
             ki= alt_ki,
             kd = alt_kd,
             Ts=ts_control,
-            max=np.deg2rad(50),
-            min =np.deg2rad(-50),
+            max=np.deg2rad(15),
+            min =np.deg2rad(-15),
             init_integrator=0.0
         )
         
@@ -93,7 +94,7 @@ class Autopilot:
             Ts=ts_control,
             max=np.deg2rad(12),
             min =np.deg2rad(-2),
-            init_integrator=0.0
+            init_integrator=mav.true_state.alpha/gamma_ki
         )
         
         self.chi_control = PIDControl(
@@ -185,11 +186,13 @@ class Autopilot:
         print(state.Va)
         
         
-        self.commanded_state.altitude = 0
-        self.commanded_state.Va = 0
+        self.commanded_state.altitude = cmd.altitude_command
+        self.commanded_state.Va = cmd.airspeed_command
         self.commanded_state.phi = 0
         self.commanded_state.theta = 0
         self.commanded_state.chi = 0
+        self.commanded_state.gamma = cmd_gamma
+        self.commanded_state.alpha = cmd_alpha
         return delta, self.commanded_state
 
     def saturate(self, input, low_limit, up_limit):
