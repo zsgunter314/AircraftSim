@@ -16,8 +16,8 @@ from controllers.tf_control import TFControl
 from message_types.msg_state import MsgState
 from message_types.msg_delta import MsgDelta
 
-airspeed_throttle_kp = 0.0011 #0.00001
-airspeed_throttle_ki = 0.0001
+airspeed_throttle_kp = 0.005 #0.00001
+airspeed_throttle_ki = 0.0005
 
 yaw_damper_kp = 10.0
 yaw_damper_kd = 1.0

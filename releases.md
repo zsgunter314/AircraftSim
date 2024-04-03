@@ -4,6 +4,7 @@ Repository Description: Airplane simulation in Python to support ECE 5353 Spring
 
 Releases:
 
+Release 0.7.2 -- Fixed lack of negative sign on pdot in true_state.gamma, everyhing runs way smooter now
 Release 0.7.1 -- Added other controllers and successfully completed all test cases
 Release 0.6.1 -- Yaw damper and Trim control fully implemented
 Release 0.5.2 -- Made a lot of changes and fixed issues in forces_moments function in mav_dynamics_control that was causing issues
