@@ -13,7 +13,7 @@ class MsgAutopilot:
     def __init__(self):
         self.airspeed_command = 25  # commanded airspeed m/s
         self.course_command = 0  # commanded course angle in rad
-        self.altitude_command = 152.4  # commanded altitude in m
+        self.altitude_command = 100  # commanded altitude in m
         self.phi_feedforward = 0.0  # feedforward command for roll angle
 
 # 500 ft = 152.4 m
