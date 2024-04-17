@@ -203,8 +203,9 @@ class MavDynamics(MavDynamicsForces):
             self._sensors.gps_n = self.true_state.north + self._gps_eta_n
             self._sensors.gps_e = self.true_state.east + self._gps_eta_e
             self._sensors.gps_h = self.true_state.altitude + self._gps_eta_h
-            self._sensors.gps_Vg = np.sqrt((self.true_state.Va*np.cos(np.deg2rad(self.true_state.psi))+self.true_state.wn)**2+(self.true_state.Va*np.sin(np.deg2rad(self.true_state.psi))+self.true_state.we)**2) + self._gps_eta_Vg
-            self._sensors.gps_course =  np.arctan2(self.true_state.Va*np.sin(np.deg2rad(self.true_state.psi))+self.true_state.we, self.true_state.Va*np.cos(np.deg2rad(self.true_state.psi))+self.true_state.wn) + self._gps_eta_course
+            
+            self._sensors.gps_Vg = np.sqrt((self.true_state.Va*np.cos(self.true_state.psi)+self.true_state.wn)**2+(self.true_state.Va*np.sin(self.true_state.psi)+self.true_state.we)**2) + self._gps_eta_Vg
+            self._sensors.gps_course =  (np.arctan2(self.true_state.Va*np.sin(self.true_state.psi)+self.true_state.we, self.true_state.Va*np.cos(self.true_state.psi)+self.true_state.wn) + self._gps_eta_course)
             self._t_gps += self._ts_simulation
         else:
             self._t_gps += self._ts_simulation
