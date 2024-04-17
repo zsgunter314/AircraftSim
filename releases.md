@@ -4,6 +4,8 @@ Repository Description: Airplane simulation in Python to support ECE 5353 Spring
 
 Releases:
 
+Release 0.8.2 -- Corrected GPS Course Equation / Graph
+
 Release 0.8.1 -- Added Gyro, Accel, Pressure, and GPS Sensors
 
 Release 0.7.3 -- Added tuning for chi and phi
