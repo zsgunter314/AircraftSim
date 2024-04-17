@@ -4,6 +4,8 @@ Repository Description: Airplane simulation in Python to support ECE 5353 Spring
 
 Releases:
 
+Release 0.8.1 -- Added Gyro, Accel, Pressure, and GPS Sensors
+
 Release 0.7.3 -- Added tuning for chi and phi
 
 Release 0.7.2 -- Fixed lack of negative sign on pdot in true_state.gamma, everyhing runs way smooter now
