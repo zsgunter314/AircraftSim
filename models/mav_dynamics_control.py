@@ -184,19 +184,38 @@ class MavDynamics(MavDynamicsForces):
         # simulate magnetometers
         # magnetic field in provo has magnetic declination of 12.5 degrees
         # and magnetic inclination of 66 degrees
-        self._sensors.mag_x = 0
-        self._sensors.mag_y = 0
-        self._sensors.mag_z = 0
 
+        inc = np.deg2rad(66)
+        dec = np.deg2rad(2.13)
+
+        R_matrix = (euler_to_rotation(0, -inc, dec)).T
+        e1 = np.matrix([[1], [0], [0]])
+        m_i = R_matrix*e1
+        mb = (euler_to_rotation(phi=self.true_state.phi, theta=self.true_state.theta, psi=self.true_state.psi)).T * m_i
+
+        mb[0] = mb[0] + np.random.normal(0, SENSOR.mag_sigma)
+        mb[1] = mb[1] + np.random.normal(0, SENSOR.mag_sigma)
+        mb[2] = mb[2] + np.random.normal(0, SENSOR.mag_sigma)
+        self._sensors.mag_x = mb.item(0)
+        self._sensors.mag_y = mb.item(1)
+        self._sensors.mag_z = mb.item(2)
+
+        
+        mv1 = (euler_to_rotation(phi=self.true_state.phi, theta=self.true_state.theta, psi=0))*mb
+        psi_m = -np.arctan2(mv1[1], mv1[0])
+        psi_out = psi_m + dec
+
+
+        print(np.rad2deg(psi_out)-np.rad2deg(self.true_state.psi))
         # simulate pressure sensors
         self._sensors.abs_pressure = 101325 * (1 - ((-0.0065*self.true_state.altitude)/288.15))**((MAV.gravity * 0.0289644)/(8.31432*-0.0065)) + np.random.normal(0, SENSOR.abs_pres_sigma)
         self._sensors.diff_pressure = ((MAV.rho * self.true_state.Va**2)/2) + np.random.normal(0, SENSOR.diff_pres_sigma)
         
         # simulate GPS sensor
         if self._t_gps >= SENSOR.ts_gps:
-            self._gps_eta_n = np.exp(-SENSOR.gps_k)*self._gps_eta_n + np.random.normal(0, SENSOR.gps_n_sigma)
-            self._gps_eta_e = np.exp(-SENSOR.gps_k)*self._gps_eta_e + np.random.normal(0, SENSOR.gps_e_sigma)
-            self._gps_eta_h = np.exp(-SENSOR.gps_k)*self._gps_eta_h + np.random.normal(0, SENSOR.gps_h_sigma)
+            self._gps_eta_n = np.exp(-SENSOR.gps_k*SENSOR.ts_gps)*self._gps_eta_n + np.random.normal(0, SENSOR.gps_n_sigma)*SENSOR.ts_gps
+            self._gps_eta_e = np.exp(-SENSOR.gps_k*SENSOR.ts_gps)*self._gps_eta_e + np.random.normal(0, SENSOR.gps_e_sigma)*SENSOR.ts_gps
+            self._gps_eta_h = np.exp(-SENSOR.gps_k*SENSOR.ts_gps)*self._gps_eta_h + np.random.normal(0, SENSOR.gps_h_sigma)*SENSOR.ts_gps
             self._gps_eta_Vg = np.random.normal(0, SENSOR.gps_Vg_sigma)
             self._gps_eta_course = np.random.normal(0, SENSOR.gps_course_sigma)
             

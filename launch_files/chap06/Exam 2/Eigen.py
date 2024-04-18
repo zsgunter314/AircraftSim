@@ -3,11 +3,11 @@ import scipy
 import matplotlib.pyplot as plt
 
 A = np.matrix([[0, 1],
-              [-0.01, -0.1]])
+              [-2, -1]])
 
-x0 = np.matrix([[-10], [20]])
+x0 = np.matrix([[5], [-5]])
 
-t  = np.linspace(0, 200, 201)
+t  = np.linspace(0, 10, 200)
 
 eigenvalues = np.linalg.eigvals(A)
 
@@ -35,13 +35,20 @@ for x in t:
     theta_dot.append(tmp_output.item(1))
 
 plt.plot(t, theta)
-plt.title("Theta vs Time")
+plt.title("Psi vs Time")
 plt.xlabel("Time (s)")
-plt.ylabel("Theta")
+plt.ylabel("Psi")
 plt.show()
 
 plt.plot(t, theta_dot)
-plt.title("Theta dot vs Time")
+plt.title("Psi dot vs Time")
 plt.xlabel("Time (s)")
-plt.ylabel("Theta dot")
+plt.ylabel("Psi dot")
 plt.show()
+
+
+omega = omega_n * np.sqrt(1 - zeta**2)
+
+T = 2 * np.pi / omega
+
+print("Period of oscillation:", T)
