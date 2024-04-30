@@ -11,21 +11,22 @@ import os, sys
 # insert parent directory at beginning of python search path
 from pathlib import Path
 sys.path.insert(0,os.fspath(Path(__file__).parents[1]))
+sys.path.insert(0,os.fspath(Path(__file__).parents[2]))
 # use QuitListener for Linux or PC <- doesn't work on Mac
 #from tools.quit_listener import QuitListener
 import numpy as np
 import pyqtgraph as pg
 import parameters.simulation_parameters as SIM
 from tools.signals import Signals
-from models.mav_dynamics_sensors import MavDynamics
+from models.mav_dynamics_control import MavDynamics
 from models.wind_simulation import WindSimulation
 from controllers.autopilot import Autopilot
-from estimation.observer import Observer
+from estimators.observer import Observer
 # from estimation.observer_full import Observer
 from viewers.mav_viewer import MavViewer
 from viewers.data_viewer import DataViewer
 from viewers.sensor_viewer import SensorViewer
-
+from Trim import do_trim
 #quitter = QuitListener()
 
 VIDEO = False
@@ -57,8 +58,9 @@ if SENSOR_PLOTS:
 # initialize elements of the architecture
 wind = WindSimulation(SIM.ts_simulation)
 mav = MavDynamics(SIM.ts_simulation)
-autopilot = Autopilot(SIM.ts_simulation)
-observer = Observer(SIM.ts_simulation)
+delta = do_trim(mav, Va=25, alpha=0)
+autopilot = Autopilot(delta, mav, SIM.ts_simulation)
+observer = Observer(SIM.ts_simulation, mav.sensors())
 
 # autopilot commands
 from message_types.msg_autopilot import MsgAutopilot
@@ -78,7 +80,7 @@ chi_command = Signals(dc_offset=np.radians(0.0),
 
 # initialize the simulation time
 sim_time = SIM.start_time
-end_time = 100
+end_time = 3000
 
 # main simulation loop
 print("Press 'Esc' to exit...")
@@ -91,7 +93,12 @@ while sim_time < end_time:
 
     # -------- autopilot -------------
     measurements = mav.sensors()  # get sensor measurements
-    estimated_state = observer.update(measurements)  # estimate states from measurements
+    estimated_state = observer.update(measurements, mav.true_state)  # estimate states from measurements
+    #estimated_state.altitude = mav.true_state.altitude
+
+    #estimated_state.Vg = mav.true_state.Vg
+    #estimated_state.gamma = mav.true_state.gamma
+    
     delta, commanded_state = autopilot.update(commands, estimated_state)
 
     # -------- physical system -------------
@@ -105,7 +112,7 @@ while sim_time < end_time:
         plot_time = sim_time
         data_view.update(mav.true_state,  # true states
                          estimated_state,  # estimated states
-                         None,  # commanded states
+                         commanded_state,  # commanded states
                          delta)  # inputs to aircraft
     if SENSOR_PLOTS:
         sensor_view.update(measurements)
@@ -130,7 +137,3 @@ if SAVE_PLOT_IMAGE:
 
 if VIDEO is True:
     video.close()
-
-
-
-

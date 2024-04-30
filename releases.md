@@ -4,6 +4,8 @@ Repository Description: Airplane simulation in Python to support ECE 5353 Spring
 
 Releases:
 
+Release 0.9.1 -- Implemented Basic Kalman Fitlering
+
 Release 0.8.3 -- Fixed static pressure equation
 
 Release 0.8.2 -- Corrected GPS Course Equation / Graph
