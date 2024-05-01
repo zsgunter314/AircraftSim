@@ -236,7 +236,7 @@ class EkfPosition:
                        [0],
                        ])
         psi_dot = state.q * (np.sin(state.phi)/(np.cos(state.theta))) + state.r*((np.cos(state.phi))/(np.cos(state.theta)))
-        f_[0] = state.Va * np.cos(state.chi)
+        f_[0] = state.Vg * np.cos(state.chi)
         f_[1] = state.Vg * np.sin(state.chi)
         term1 = state.Va*np.cos(state.psi)+state.wn
         term2= -state.Va*psi_dot*np.sin(state.psi)
